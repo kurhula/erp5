@@ -1,0 +1,1 @@
+return context.restrictedTraverse(relative_url).SaleOrder_viewEpsonPrintoutAsGadget()

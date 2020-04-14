@@ -1,7 +1,6 @@
 <!doctype html>
 <html tal:define="dummy_variable python:context.REQUEST.response.setHeader('Access-Control-Allow-Origin', '*');
                   data_dict here/Order_getODTDataDict;
-                  portal_url here/portal_url;
                   reservation python: request.get('reservation_only');
                   form_id python: request.get('form_id');
                   set_precision python: request.set('precision', here.getQuantityPrecisionFromResource(here.getPriceCurrency()));
@@ -13,9 +12,15 @@
   <head>
     <meta charset="utf-8">
     <title>Receipt</title>
-    <script type="text/javascript" tal:attributes='src python:"%s/jquery/core/jquery.js" % portal_url'></script>
-    <script type="text/javascript" tal:attributes='src python:"%s/epos-print-4.1.0.js" % portal_url' ></script>
-    <script type="text/javascript" tal:attributes='src python:"%s/erp5_epson_canvas_printout.js" % portal_url' ></script>
+    <script type="text/javascript" src="jquery.js" ></script>
+    <script type="text/javascript" src="epos-print-4.1.0.js"></script>
+    <script type="text/javascript" src= "erp5_epson_canvas_printout.js"></script>
+    <script src="rsvp.js" type="text/javascript"></script>
+    <script src="renderjs.js" type="text/javascript"></script>
+    <script src="jiodev.js" type="text/javascript"></script>
+
+    <script type="text/javascript" src="erp5_epson_gadget.js" ></script>
+
     <link rel="license" href="http://www.opensource.org/licenses/mit-license/">
   </head>
   <body style="background:white">
@@ -310,21 +315,23 @@
             $('#print_button').click();
          })
       </script>
-      <a tal:condition="python: not reservation" href="./SaleOrder_confirmAndReturn"> 
-         <span i18n:translate='' i18n:domain='ui'>Confirm Order and Return </span>
-      </a>
-      <a tal:condition="reservation" href="./SaleOrderModule_viewReservedItemFastInputDialog"> 
-         <span i18n:translate='' i18n:domain='ui'>Return</span>
-      </a>
-      <div style="float:right">
-        <a  tal:attributes="href python:'./SaleOrder_cancelAndReturn?reservation=%s' % reservation">
-          <span i18n:translate='' i18n:domain='ui'>Cancel Order and Return</span>
+      <form>
+        <button class="confirm_return" type="submit" tal:condition="python: not reservation" value="SaleOrder_confirmAndReturn"> 
+           <span i18n:translate='' i18n:domain='ui'>Confirm Order and Return </span>
+        </button>
+        <a tal:condition="reservation" href="./SaleOrderModule_viewReservedItemFastInputDialog"> 
+           <span i18n:translate='' i18n:domain='ui'>Return</span>
         </a>
-        <br/>
-        <a href="./" target="_blank" tal:condition="nothing">
-          <span i18n:translate='' i18n:domain='ui'>Edit Order</span>
-        </a>
-      </div>
+        <div style="float:right">
+          <button  class="cancel_return" type="submit" tal:attributes="value python:'SaleOrder_cancelAndReturn?reservation=%s' % reservation">
+            <span i18n:translate='' i18n:domain='ui'>Cancel Order and Return</span>
+          </button>
+          <br/>
+          <a href="./" target="_blank" tal:condition="nothing">
+            <span i18n:translate='' i18n:domain='ui'>Edit Order</span>
+          </a>
+        </div>
+      </form>
     </tal:block>
     <tal:block tal:condition="python: form_id and not request.get('auto_print', 0)">
       <a tal:attributes="href string:./${form_id}">
